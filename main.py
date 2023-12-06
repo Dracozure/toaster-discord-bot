@@ -30,10 +30,6 @@ async def on_message(message):
             await message.channel.send(f'Nice try {author.mention}')
     await bot.process_commands(message)
 
-@bot.command(name='ping')
-async def pong(ctx):
-    await ctx.send(f'Pong! {round(bot.latency * 1000, 1)}ms')
-
 @bot.command(name='createPassport')
 async def createPassport(ctx, user: discord.User):
     wanted = Image.open('./assets/img/pass_page_1.png')
