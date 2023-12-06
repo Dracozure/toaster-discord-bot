@@ -1,4 +1,3 @@
-from xml.etree.ElementInclude import include
 import discord
 from discord import Intents
 from PIL import Image
