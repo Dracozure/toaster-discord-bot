@@ -14,7 +14,7 @@ class Logging(commands.Cog):
             author = after.author
             date_format = "%Y-%m-%d %H:%M:%S"
             my_timezone = "PST"
-            direct_attachments = await self.processAttachments(before)     
+            direct_attachments = await self.processAttachments(before)
 
             timestamp_original = after.created_at.astimezone(timezone("US/Pacific")).strftime(date_format)
             timestamp_edit = datetime.now().astimezone(timezone("US/Pacific")).strftime(date_format)
@@ -30,6 +30,8 @@ class Logging(commands.Cog):
             Edited At: {timestamp_edit}"""
 
             message_info_str = f"""
+            --__Message Link__--
+            {after.jump_url}
             --__Message Before__--
             {before.content}
             --__Message After__--
@@ -39,15 +41,15 @@ class Logging(commands.Cog):
             --__Original Attachments__--
             {direct_attachments}"""
 
-            embed = discord.Embed(title = "Message Edit", color = author.color)
+            embed = discord.Embed(title = "MESSAGE EDIT ⚠️", color = author.color)
             
             embed.add_field(name = "Author Info", value = author_info_str, inline = False)
             embed.add_field(name = "Timestamp Info", value = timestamp_info_str, inline = False)
             embed.add_field(name = "Message Info", value = message_info_str, inline = False)
             embed.add_field(name = "Direct Attachments Info", value = attachments_info_str, inline = False)
 
-            channel = None
             guild_id = after.guild.id
+            channel = None
 
             if guild_id == 774455931442298901:
                 channel = self.bot.get_channel(1182578368890290257)
