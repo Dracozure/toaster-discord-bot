@@ -14,17 +14,10 @@ class Logging(commands.Cog):
             author = after.author
             date_format = "%Y-%m-%d %H:%M:%S"
             my_timezone = "PST"
-            before_attachments = []
-            after_attachments = []
+            direct_attachments = await self.processAttachments(before)     
 
             timestamp_original = after.created_at.astimezone(timezone("US/Pacific")).strftime(date_format)
             timestamp_edit = datetime.now().astimezone(timezone("US/Pacific")).strftime(date_format)
-
-            if (before.attachments):
-                before_attachments = before.attachments
-
-            if (after.attachments):
-                after_attachments = after.attachments
 
             author_info_str = f"""
             Author: <@{author.id}>
@@ -37,18 +30,33 @@ class Logging(commands.Cog):
             Edited At: {timestamp_edit}"""
 
             message_info_str = f"""
-            Message Before: {before.content}
-            Message After: {after.content}"""
+            --__Message Before__--
+            {before.content}
+            --__Message After__--
+            {after.content}"""
 
-            embed = discord.Embed(title = "Author Info", description = author_info_str, color = author.color)
+            attachments_info_str = f"""
+            --__Original Attachments__--
+            {direct_attachments}"""
+
+            embed = discord.Embed(title = "Message Edit", color = author.color)
             
+            embed.add_field(name = "Author Info", value = author_info_str, inline = False)
             embed.add_field(name = "Timestamp Info", value = timestamp_info_str, inline = False)
             embed.add_field(name = "Message Info", value = message_info_str, inline = False)
+            embed.add_field(name = "Direct Attachments Info", value = attachments_info_str, inline = False)
 
             await after.channel.send(embed = embed)
 
-            if after.attachments:
-                await after.channel.send(content = after.attachments[0].url)
+    async def processAttachments(self, message):
+        attachments = ""
+
+        if message.attachments:
+            for attachment in message.attachments:
+                attachments += attachment.content_type + "\n"
+                attachments += attachment.url + "\n"
+
+        return attachments
 
 async def setup(bot):
     print("Inside logging setup function")
