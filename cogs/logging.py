@@ -46,7 +46,15 @@ class Logging(commands.Cog):
             embed.add_field(name = "Message Info", value = message_info_str, inline = False)
             embed.add_field(name = "Direct Attachments Info", value = attachments_info_str, inline = False)
 
-            await after.channel.send(embed = embed)
+            channel = None
+            guild_id = after.guild.id
+
+            if guild_id == 774455931442298901:
+                channel = self.bot.get_channel(1182578368890290257)
+            else:
+                channel = self.bot.get_channel(after.channel.id)
+
+            await channel.send(embed = embed)
 
     async def processAttachments(self, message):
         attachments = ""
