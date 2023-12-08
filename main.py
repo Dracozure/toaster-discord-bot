@@ -4,7 +4,7 @@ from PIL import Image
 from io import BytesIO
 from bot import Bot
 
-intents = Intents.default()
+intents = Intents.all()
 intents.message_content = True
 bot = Bot(command_prefix = '>', intents = intents)
 
@@ -17,6 +17,17 @@ async def korean_tad(ctx):
 async def korean_tad(ctx):
     file = discord.File('./assets/videos/korean_tad_2.mp4')
     await ctx.send('Another Tad moment', file = file)
+
+@bot.event
+async def on_member_update(before, after):
+    if before.id == 1081523614475624498 and after.display_name != "khỉ yêu dầu":
+        await after.edit(nick = "khỉ yêu dầu")
+
+@bot.command(name='changenick')
+async def change_nick(ctx, member: discord.Member, *, nick):
+    if ctx.message.author.id == 313393208744869892:
+        await member.edit(nick = nick)
+
 
 @bot.event
 async def on_message(message):
