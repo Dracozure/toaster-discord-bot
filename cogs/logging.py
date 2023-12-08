@@ -35,7 +35,7 @@ class Logging(commands.Cog):
         --__Original Attachments__--
         {direct_attachments}"""
 
-        embed = discord.Embed(title = "MESSAGE DELETION ❌", color = author.color)
+        embed = discord.Embed(title = "MESSAGE DELETION ❌", color = 0xff0000)
         
         embed.add_field(name = "Author Info", value = author_info_str, inline = False)
         embed.add_field(name = "Timestamp Info", value = timestamp_info_str, inline = False)
@@ -84,7 +84,7 @@ class Logging(commands.Cog):
         --__Original Attachments__--
         {direct_attachments}"""
 
-        embed = discord.Embed(title = "MESSAGE EDIT ⚠️", color = author.color)
+        embed = discord.Embed(title = "MESSAGE EDIT ⚠️", color = 0xfff700)
         
         embed.add_field(name = "Author Info", value = author_info_str, inline = False)
         embed.add_field(name = "Timestamp Info", value = timestamp_info_str, inline = False)
