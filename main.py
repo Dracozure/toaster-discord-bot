@@ -28,7 +28,6 @@ async def change_nick(ctx, member: discord.Member, *, nick):
     if ctx.message.author.id == 313393208744869892:
         await member.edit(nick = nick)
 
-
 @bot.event
 async def on_message(message):
     if message.author.id == 509287976208039958:
@@ -46,7 +45,7 @@ async def ping(ctx):
     await ctx.send(f'Pong! {round(bot.latency * 1000, 1)}ms')
 
 @bot.command(name='createPassport')
-async def createPassport(ctx, user: discord.User):
+async def create_passport(ctx, user: discord.User):
     wanted = Image.open('./assets/img/pass_page_1.png')
     data = BytesIO(await user.avatar.read())
     pfp = Image.open(data)
@@ -58,6 +57,15 @@ async def createPassport(ctx, user: discord.User):
     wanted.save('profile.png')
 
     await ctx.send(file=discord.File('profile.png'))
+
+@bot.command(name='getdisplaypfp')
+async def get_display_pfp(ctx, user: discord.User):
+    pfp = user.display_avatar
+    embed = discord.Embed(title=f"Member Display Avatar", description="", color=0xffff00)
+
+    embed.set_thumbnail(url=(pfp.url))
+
+    await ctx.send(embed = embed)
 
 bot.run('MTE1ODQ3OTc3NjQ1NDAyOTM2NA.GqfHoh.b3FLSliFpxYxbSL3csm9XWivOGyd25PrmTuog0')
 

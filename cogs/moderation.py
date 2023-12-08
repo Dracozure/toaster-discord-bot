@@ -18,5 +18,5 @@ class Moderation(commands.Cog):
             await ctx.send(f'{member.mention} has been hauled off to jail for **{reason}**')
 
 async def setup(bot):
-    print("Inside setup function")
+    print("Inside moderation setup function")
     await bot.add_cog(Moderation(bot))
