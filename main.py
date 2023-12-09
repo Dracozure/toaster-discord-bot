@@ -23,7 +23,7 @@ async def on_member_update(before, after):
     if before.id == 1081523614475624498 and after.display_name != "khỉ yêu dầu":
         await after.edit(nick = "khỉ yêu dầu")
 
-@bot.command(name='changenick')
+@bot.command(name='changeNick')
 async def change_nick(ctx, member: discord.Member, *, nick):
     if ctx.message.author.id == 313393208744869892:
         await member.edit(nick = nick)
@@ -58,7 +58,7 @@ async def create_passport(ctx, user: discord.User):
 
     await ctx.send(file=discord.File('profile.png'))
 
-@bot.command(name='getdisplaypfp')
+@bot.command(name='getDisplayPfp')
 async def get_display_pfp(ctx, user: discord.User):
     pfp = user.display_avatar
     embed = discord.Embed(title=f"Member Display Avatar", description="", color=0xffff00)
@@ -66,6 +66,14 @@ async def get_display_pfp(ctx, user: discord.User):
     embed.set_thumbnail(url=(pfp.url))
 
     await ctx.send(embed = embed)
+
+@bot.command(name='purgeChannel')
+async def purge_channel(ctx, limit):
+    if ctx.message.author.id != 313393208744869892:
+        await ctx.send("No perms!")
+        return
+    
+    await ctx.channel.purge(limit = int(limit))
 
 bot.run('MTE1ODQ3OTc3NjQ1NDAyOTM2NA.GqfHoh.b3FLSliFpxYxbSL3csm9XWivOGyd25PrmTuog0')
 
