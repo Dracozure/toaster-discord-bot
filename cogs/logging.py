@@ -64,6 +64,10 @@ class Logging(commands.Cog):
         date_format = "%Y-%m-%d %H:%M:%S"
         my_timezone = "PST"
         direct_attachments = await self.processAttachments(before)
+        after_attachments = await self.processAttachments(after)
+
+        if (before == after and direct_attachments == after_attachments):
+            return
 
         timestamp_original = after.created_at.astimezone(timezone("US/Pacific")).strftime(date_format)
         timestamp_edit = datetime.now().astimezone(timezone("US/Pacific")).strftime(date_format)
