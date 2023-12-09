@@ -10,6 +10,9 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        if (message.author.bot):
+            return
+        
         author = message.author
         date_format = "%Y-%m-%d %H:%M:%S"
         my_timezone = "PST"
@@ -54,6 +57,9 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
+        if (before.author.bot):
+            return
+        
         author = after.author
         date_format = "%Y-%m-%d %H:%M:%S"
         my_timezone = "PST"
