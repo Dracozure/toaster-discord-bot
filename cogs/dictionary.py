@@ -39,7 +39,7 @@ class Dictionary(commands.Cog):
         if (message.author.bot):
             return
 
-        if (guild_id != 774455931442298901 or channel_id != 1144334325765120143):
+        if (guild_id != 520337076659421192):
             return
         
         if (last_author_id != "" and int(author_id) == int(last_author_id)):
@@ -69,6 +69,8 @@ class Dictionary(commands.Cog):
                 await message.channel.send(f"Your word must start with the letter **{starting_letter}**")
 
                 return
+            
+            print("YES")
 
             if (not word_already_typed):
                 word = await self.trim_word_alpha(word)
@@ -104,7 +106,7 @@ class Dictionary(commands.Cog):
     async def get_last_letter(self):
         last_word = open("./current_word.txt", "r").read().strip()
 
-        if (os.stat("./current_word.txt").st_size == 0):
+        if (last_word.strip() == ""):
             return ""
 
         return last_word[-1]
@@ -112,7 +114,7 @@ class Dictionary(commands.Cog):
     async def get_last_author(self):
         last_author_id = open("./last_author.txt", "r").read().strip()
 
-        if (os.stat("./last_author.txt").st_size == 0):
+        if (last_author_id.strip() == ""):
             return ""
 
         return last_author_id
