@@ -7,9 +7,9 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(name = "smokebreak")
     @commands.has_permissions(ban_members = True)
-    async def smokebreak(self, ctx, member: discord.Member, duration, *, reason: str):
+    async def smoke_break(self, ctx, member: discord.Member, duration, *, reason: str):
         time = datetime.timedelta(seconds = int(duration))
 
         await member.edit(timed_out_until=discord.utils.utcnow() + time)
