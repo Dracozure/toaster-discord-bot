@@ -54,26 +54,26 @@ class Dictionary(commands.Cog):
             starting_letter = await self.get_last_letter()
 
             if (word.strip()[0] != starting_letter and starting_letter != ""):
-                await message.channel.send(f"Your word must start with the letter **{starting_letter}**")
-
                 await message.add_reaction(wrong_reaction)
+                
+                await message.channel.send(f"Your word must start with the letter **{starting_letter}**")
 
                 return
 
             if (not word_exist):
+                await message.add_reaction(correct_reaction)
+
                 await self.insert_word(word, author_id, timestamp, message_link)
                 
                 await self.save_last_word(word)
-
-                await message.add_reaction(correct_reaction)
             else:
-                await message.channel.send(f"**{word}** has already been typed")
-
                 await message.add_reaction(wrong_reaction)
+                
+                await message.channel.send(f"**{word}** has already been typed")
         except:
-            await message.channel.send(f"**{message.content}** is invalid")
-
             await message.add_reaction(wrong_reaction)
+
+            await message.channel.send(f"**{message.content}** is invalid")
 
     async def insert_word(self, word, author_id, timestamp, message_link):
         self.c.execute(f"INSERT INTO words VALUES ('{word}', '{author_id}', '{timestamp}','{message_link}')")
