@@ -3,7 +3,7 @@ from datetime import datetime
 from pytz import timezone
 import discord
 
-class Logging(commands.Cog):
+class Msg_Logging(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -123,6 +123,6 @@ class Logging(commands.Cog):
 
 async def setup(bot):
     print("Inside logging setup function")
-    await bot.add_cog(Logging(bot))
+    await bot.add_cog(Msg_Logging(bot))
 
     
