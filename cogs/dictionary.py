@@ -38,29 +38,34 @@ class Dictionary(commands.Cog):
         if (message.author.bot):
             return
 
-        if (guild_id != 774455931442298901 or channel_id != 1144334325765120143):
+        if (guild_id != 520337076659421192):
             return
+        
+        # USE THE MESSAGE CONTENT INSTEAD, JUST CHECK FOR RESPONSE, MERRIAM WEBSTER RETURNING SOME WEIRD STUFF
         
         try:
             response = requests.get(f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{message.content}?key={self.DICTIONARY_API}")
-            word = response.json()[0]["meta"]["id"]
 
-            if (":" in word):
+            word = response.json()[0]["meta"]["id"].lower().strip()
+            starting_letter = await self.get_last_letter()
+            word_already_typed = await self.check_word_exist(word)
+
+            if (":" in word): #Sometimes there are multiple definitions and API returns word with colon. Ex: hey:1
                 index = word.index(":")
 
                 word = word[0:index]
 
-            word_exist = await self.get_word(word)
-            starting_letter = await self.get_last_letter()
+            if (word != message.content.lower().strip()): #Sometimes dictionary will "autocorrect" which returns wrong word
+                raise Exception()
 
-            if (word.strip()[0] != starting_letter and starting_letter != ""):
+            if (word[0] != starting_letter and starting_letter != ""): 
                 await message.add_reaction(wrong_reaction)
                 
                 await message.channel.send(f"Your word must start with the letter **{starting_letter}**")
 
                 return
 
-            if (not word_exist):
+            if (not word_already_typed):
                 await message.add_reaction(correct_reaction)
 
                 await self.insert_word(word, author_id, timestamp, message_link)
@@ -69,18 +74,20 @@ class Dictionary(commands.Cog):
             else:
                 await message.add_reaction(wrong_reaction)
                 
-                await message.channel.send(f"**{word}** has already been typed")
+                await message.channel.send(f"**{message.content}** has already been typed")
         except:
             await message.add_reaction(wrong_reaction)
 
             await message.channel.send(f"**{message.content}** is invalid")
 
     async def insert_word(self, word, author_id, timestamp, message_link):
+        word = self.trim_word_alpha(word)
+        
         self.c.execute(f"INSERT INTO words VALUES ('{word}', '{author_id}', '{timestamp}','{message_link}')")
 
         self.conn.commit()
 
-    async def get_word(self, word):
+    async def check_word_exist(self, word):
         try:
             self.c.execute(f"SELECT * FROM words WHERE word = '{word}'")
 
@@ -95,7 +102,7 @@ class Dictionary(commands.Cog):
     async def get_last_letter(self):
         last_word = open("./current_word.txt", "r").read().strip()
 
-        if (last_word == ""):
+        if (os.stat("./current_word.txt").st_size == 0):
             return ""
 
         return last_word[-1]
@@ -105,6 +112,13 @@ class Dictionary(commands.Cog):
 
         with open(file, 'w') as filetowrite:
             filetowrite.write(word)
+
+    async def trim_word_alpha(self, word):
+        for char in word:
+            if (not word.isalpha()):
+                word = word.replace(char, "")
+
+        return word
 
 async def setup(bot):
     print("Inside dictionary setup function")
