@@ -47,19 +47,18 @@ class Dictionary(commands.Cog):
 
             return
         
-        # USE THE MESSAGE CONTENT INSTEAD, JUST CHECK FOR RESPONSE, MERRIAM WEBSTER RETURNING SOME WEIRD STUFF
-        
         try:
             response = requests.get(f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{message.content}?key={self.DICTIONARY_API}")
 
             word = response.json()[0]["meta"]["id"].lower().strip()
             starting_letter = await self.get_last_letter()
-            word_already_typed = await self.check_word_exist(word)
 
             if (":" in word): #Sometimes there are multiple definitions and API returns word with colon. Ex: hey:1
                 index = word.index(":")
 
                 word = word[0:index]
+
+            word_already_typed = await self.check_word_exist(word)
 
             if (word != message.content.lower().strip()): #Sometimes dictionary will "autocorrect" which returns wrong word
                 raise Exception()
@@ -69,8 +68,6 @@ class Dictionary(commands.Cog):
                 await message.channel.send(f"Your word must start with the letter **{starting_letter}**")
 
                 return
-            
-            print("YES")
 
             if (not word_already_typed):
                 word = await self.trim_word_alpha(word)
