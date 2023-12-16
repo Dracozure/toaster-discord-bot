@@ -51,7 +51,7 @@ class Dictionary(commands.Cog):
         if (message.author.bot):
             return
 
-        if (guild_id != 520337076659421192 or channel_id != 1144334325765120143):
+        if (guild_id != 774455931442298901 or channel_id != 1144334325765120143):
             return
         
         if (last_author_id != "" and int(author_id) == int(last_author_id)):
