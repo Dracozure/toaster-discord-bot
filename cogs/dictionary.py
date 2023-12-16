@@ -24,15 +24,20 @@ class Dictionary(commands.Cog):
 
     @commands.command(name = "getwordinfo")
     async def get_word_info(self, ctx, word):
-        response = requests.get(f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{word}?key={self.DICTIONARY_API}")
+        dict_response = requests.get(f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{word}?key={self.DICTIONARY_API}")
 
-        word = response.json()[0]["meta"]["id"].lower().strip()
+        word = dict_response.json()[0]["meta"]["id"].lower().strip()
         print(word)
-        stem_set = set(map(lambda stem: stem.split(" ")[0], response.json()[0]["meta"]["stems"]))
-        for word in stem_set:
-            print(word)
-        short_def = response.json()[0]["shortdef"] #List
-        part_of_speech = response.json()[0]["fl"]
+        stem_set = set(map(lambda stem: stem.split(" ")[0], dict_response.json()[0]["meta"]["stems"]))
+        for stem in stem_set:
+            print(stem)
+        short_def = dict_response.json()[0]["shortdef"] #List
+        part_of_speech = dict_response.json()[0]["fl"]
+
+        #use def for getting examples
+
+        for fields in dict_response.json()[0]:
+            print(fields)
     
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -51,26 +56,24 @@ class Dictionary(commands.Cog):
         if (message.author.bot):
             return
 
-        if (guild_id != 774455931442298901 or channel_id != 1144334325765120143):
+        if (guild_id != 520337076659421192):
             return
         
-        if (last_author_id != "" and int(author_id) == int(last_author_id)):
-            await message.channel.send("Wait for someone else to input word")
+        #if (last_author_id != "" and int(author_id) == int(last_author_id)):
+            #await message.channel.send("Wait for someone else to input word")
 
-            return
+            #return
         
         try:
             response = requests.get(f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{message.content}?key={self.DICTIONARY_API}")
 
             dict_word = response.json()[0]["meta"]["id"].lower().strip()
             user_word = message.content.lower().strip()
-            word_set = set(map(lambda stem: stem.split(" ")[0], response.json()[0]["meta"]["stems"]))
+            word_set = set(map(lambda stem: stem.split(" ")[0].lower(), response.json()[0]["meta"]["stems"]))
             starting_letter = await self.get_last_letter()
 
             if (":" in dict_word): #Sometimes there are multiple definitions and API returns word with colon. Ex: hey:1
-                index = dict_word.index(":")
-
-                dict_word = dict_word[0:index]
+                dict_word = dict_word[0:dict_word.index(":")]
 
             word_set.add(dict_word)
 
