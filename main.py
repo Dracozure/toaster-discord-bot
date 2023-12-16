@@ -95,6 +95,13 @@ async def purge_channel(ctx, limit):
     
     await ctx.channel.purge(limit = int(limit))
 
+@bot.command(name="getavatar")
+async def get_avatar(ctx, member: discord.Member):
+    if member.guild_avatar == None:
+        await ctx.send(member.display_avatar)
+        return
+    await ctx.send(member.guild_avatar)
+
 bot.run(f"{BOT_TOKEN}")
 
 
