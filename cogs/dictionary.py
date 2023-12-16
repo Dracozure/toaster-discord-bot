@@ -106,6 +106,8 @@ class Dictionary(commands.Cog):
     async def check_word_exist(self, word_set, user_word):
         for word in word_set:
             try:
+                word = word.replace("'", "''")
+
                 self.cursor.execute(f"SELECT * FROM words WHERE word = '{word}'")
 
                 fetched_word = self.cursor.fetchone()
@@ -138,11 +140,10 @@ class Dictionary(commands.Cog):
         return last_author_id
     
     async def save_last_word(self, word):
-        temp = "" + word
         file = "./current_word.txt" 
 
         with open(file, "w") as filetowrite:
-            filetowrite.write(temp)
+            filetowrite.write(word)
 
     async def save_last_author(self, author_id):
         file = "./last_author.txt"
