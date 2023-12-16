@@ -53,6 +53,9 @@ class Dictionary(commands.Cog):
         correct_reaction = "✅"
         wrong_reaction = "❌"
 
+        if (len(message.content.split(" ")) > 1 or message.content.startswith("https://")):
+            return
+
         if (message.author.bot):
             return
 
@@ -73,7 +76,7 @@ class Dictionary(commands.Cog):
             starting_letter = await self.get_last_letter()
 
             if (":" in dict_word): #Sometimes there are multiple definitions and API returns word with colon. Ex: hey:1
-                dict_word = dict_word[0:dict_word.index(":")]
+                dict_word = dict_word[:dict_word.index(":")]
 
             word_set.add(dict_word)
 
