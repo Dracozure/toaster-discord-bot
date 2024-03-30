@@ -8,17 +8,39 @@ class Msg_Logging(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.channel = None
+        self.guild = None
+
+    async def cog_load(self):
+        pass
+
+    async def cog_unload(self):
+        pass
+
+    # Affects multiple servers, only one instance running on multiple servers
+
+    @app_commands.command(name="setchannellogging")
+    @app_commands.describe(channelid="id of logging channel")
+    async def hello(self, interaction: discord.Interaction, channelid: str):
+        try:
+            self.guild = interaction.guild
+            if not self.guild.get_channel(int(channelid)):
+                raise Exception
+            self.channel = self.guild.get_channel(int(channelid))
+            await interaction.response.send_message(f"Set #{self.channel} as logging channel")
+        except Exception:
+            await interaction.response.send_message("Invalid channel id")
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message):
-        if (message.author.bot):
-            return
-        
+    async def on_message_delete(self, message):        
         author = message.author
         date_format = "%Y-%m-%d %H:%M:%S"
         my_timezone = "PST"
         direct_attachments = await self.processAttachments(message)
         timestamp = message.created_at.astimezone(timezone("US/Pacific")).strftime(date_format)
+
+        if (message.author.bot):
+            return
 
         author_info_str = f"""
         Author: <@{author.id}>
@@ -46,26 +68,18 @@ class Msg_Logging(commands.Cog):
         embed.add_field(name = "Message Info", value = message_info_str, inline = False)
         embed.add_field(name = "Direct Attachments Info", value = attachments_info_str, inline = False)
 
-        guild_id = message.guild.id
-        channel = None
-
-        if guild_id == 1220116600842092644:
-            channel = self.bot.get_channel(1223500443464765511)
-        else:
-            channel = self.bot.get_channel(message.channel.id)
-
-        await channel.send(embed = embed)
+        await self.channel.send(embed = embed)
 
     @commands.Cog.listener()
-    async def on_message_edit(self, before, after):
-        if (before.author.bot):
-            return
-        
+    async def on_message_edit(self, before, after):        
         author = after.author
         date_format = "%Y-%m-%d %H:%M:%S"
         my_timezone = "PST"
         direct_attachments = await self.processAttachments(before)
         after_attachments = await self.processAttachments(after)
+
+        if (before.author.bot):
+            return
 
         if (before == after and direct_attachments == after_attachments):
             return
@@ -102,15 +116,7 @@ class Msg_Logging(commands.Cog):
         embed.add_field(name = "Message Info", value = message_info_str, inline = False)
         embed.add_field(name = "Direct Attachments Info", value = attachments_info_str, inline = False)
 
-        guild_id = after.guild.id
-        channel = None
-
-        if guild_id == 1220116600842092644:
-            channel = self.bot.get_channel(1223500443464765511)
-        else:
-            channel = self.bot.get_channel(after.channel.id)
-
-        await channel.send(embed = embed)
+        await self.channel.send(embed = embed)
 
     async def processAttachments(self, message):
         attachments = ""

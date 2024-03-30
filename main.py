@@ -14,10 +14,24 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-@bot.command(name="koreanTad")
+# Runs as soon as script is run, setup once
+@bot.event
+async def setup_hook():
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"cogs.{filename[:-3]}")
+    
+    synced = await bot.tree.sync()
+    print(f"Synced {len(synced)} commands(s)")
+
+@bot.tree.command(name="hey")
+async def hey(interaction: discord.Interaction):
+    await interaction.response.send_message(f"hey user", ephemeral=True)
+
+@bot.command(name="thisisyou")
 async def korean_tad(ctx):
     file = discord.File("./assets/videos/korean_tad.mov")
-    await ctx.send("Tad moment", file = file)
+    await ctx.send("Is this you?", file = file)
 
 @bot.event
 async def on_member_update(before, after):
