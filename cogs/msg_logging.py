@@ -1,6 +1,7 @@
 from discord.ext import commands
 from datetime import datetime
 from pytz import timezone
+from discord import app_commands
 import discord
 
 class Msg_Logging(commands.Cog):
@@ -48,8 +49,8 @@ class Msg_Logging(commands.Cog):
         guild_id = message.guild.id
         channel = None
 
-        if guild_id == 774455931442298901:
-            channel = self.bot.get_channel(1182578368890290257)
+        if guild_id == 1220116600842092644:
+            channel = self.bot.get_channel(1223500443464765511)
         else:
             channel = self.bot.get_channel(message.channel.id)
 
@@ -104,8 +105,8 @@ class Msg_Logging(commands.Cog):
         guild_id = after.guild.id
         channel = None
 
-        if guild_id == 774455931442298901:
-            channel = self.bot.get_channel(1182578368890290257)
+        if guild_id == 1220116600842092644:
+            channel = self.bot.get_channel(1223500443464765511)
         else:
             channel = self.bot.get_channel(after.channel.id)
 

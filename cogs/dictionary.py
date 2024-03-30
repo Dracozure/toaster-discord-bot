@@ -1,5 +1,6 @@
 import sqlite3
 from discord.ext import commands
+from discord import app_commands
 import requests
 from dotenv import load_dotenv
 import os
@@ -14,6 +15,8 @@ class Dictionary(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         load_dotenv()
+
+        # For database
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS words (
                 word text,
                 author_id integer,
@@ -46,7 +49,7 @@ class Dictionary(commands.Cog):
         date_format = "%Y-%m-%d %H:%M:%S"
 
         author_id = message.author.id
-        last_author_id = await self.get_last_author()
+        #last_author_id = await self.get_last_author()
         message_link = message.jump_url
         timestamp = message.created_at.astimezone(timezone("US/Pacific")).strftime(date_format)
 
@@ -59,13 +62,14 @@ class Dictionary(commands.Cog):
         if (message.author.bot):
             return
 
-        if (guild_id != 774455931442298901 or channel_id != 1144334325765120143):
+        if (guild_id != 1220116600842092644 or channel_id != 1223498370023297076):
             return
         
-        if (last_author_id != "" and int(author_id) == int(last_author_id)):
-            await message.channel.send("Wait for someone else to input word")
+        #Does not allow same author to type word twice in a row
+        ##if (last_author_id != "" and int(author_id) == int(last_author_id)):
+        ##    await message.channel.send("Wait for someone else to input word")
 
-            return
+        ##    return
         
         try:
             response = requests.get(f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{message.content}?key={self.DICTIONARY_API}")
@@ -75,12 +79,12 @@ class Dictionary(commands.Cog):
             word_set = set(map(lambda stem: stem.split(" ")[0].lower(), response.json()[0]["meta"]["stems"]))
             starting_letter = await self.get_last_letter()
 
-            if (":" in dict_word): #Sometimes there are multiple definitions and API returns word with colon. Ex: hey:1
+            if (":" in dict_word): # Sometimes there are multiple definitions and API returns word with colon. Ex: hey:1
                 dict_word = dict_word[:dict_word.index(":")]
 
             word_set.add(dict_word)
 
-            if (user_word not in word_set): #Sometimes dictionary will "autocorrect" which returns wrong word
+            if (user_word not in word_set): # Sometimes dictionary will "autocorrect" which returns wrong word
                 raise Exception()
 
             if (user_word[0] != starting_letter and starting_letter != ""): 
